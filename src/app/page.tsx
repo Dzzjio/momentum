@@ -9,16 +9,8 @@ export default async function DepartmentsPage() {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold">Departments</h1>
-      <ul>
-        {departments.map((dept) => (
-          <li key={dept.id} className="p-2 border-b">
-            {dept.name}
-          </li>
-        ))}
-      </ul>
 
-      <h1>Statuses</h1>
+      <h1> დავალებების გვერდი</h1>
        <ul>
         {statuses.map((stat) => (
           <li key={stat.id} className="p-2 border-b">

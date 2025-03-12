@@ -1,29 +1,24 @@
 import Link from 'next/link';
+import Image from 'next/image';
+import logo from '../../../public/img/logo-hourglass.png';
 
 const Header = () => {
   return (
-    <header className="bg-gray-800 text-white p-4">
+    <header className=" p-4">
       <nav className="container mx-auto flex justify-between items-center">
         <div className="text-xl font-bold">
-          <Link href="/">MyApp</Link>
+          <Link href="/">
+            <Image src={logo} alt="Momentum Logo" width={150} height={50} priority />
+          </Link>
         </div>
-        <ul className="flex space-x-4">
-          <li>
-            <Link href="/" className="hover:text-gray-300">
-              Home
+        <div className="flex items-center gap-4">
+          <Link href="/create-employee" className="border border-[var(--brand-primary)] text-[var(--brand-primary)] px-4 py-2 rounded-md hover:bg-[var(--brand-primary)] hover:text-white">
+              თანამშრომლის შექმნა
             </Link>
-          </li>
-          <li>
-            <Link href="/about" className="hover:text-gray-300">
-              About
+            <Link href="/create-task" className="border border-[var(--brand-primary)] bg-[var(--brand-primary)] text-white px-4 py-2 rounded-md hover:bg-white hover:text-[var(--brand-primary)]">
+              + შექმენი ახალი დავალება
             </Link>
-          </li>
-          <li>
-            <Link href="/contact" className="hover:text-gray-300">
-              Contact
-            </Link>
-          </li>
-        </ul>
+        </div>
       </nav>
     </header>
   );
