@@ -4,8 +4,8 @@ import logo from '../../../public/img/logo-hourglass.png';
 
 const Header = () => {
   return (
-    <header className=" p-4">
-      <nav className="container mx-auto flex justify-between items-center">
+    <header className="py-4">
+      <nav className=" mx-auto flex justify-between items-center">
         <div className="text-xl font-bold">
           <Link href="/">
             <Image src={logo} alt="Momentum Logo" width={150} height={50} priority />

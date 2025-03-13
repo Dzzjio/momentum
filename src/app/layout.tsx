@@ -30,11 +30,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <Header />
+      
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <section className="w-4/5 mx-auto">
+          <Header />
+          {children}
+        </section>
       </body>
     </html>
   );
