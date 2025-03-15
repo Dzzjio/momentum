@@ -11,11 +11,14 @@ interface Option {
 interface FilterSectionProps {
   priorityOptions: Option[];
   departmentOptions: Option[];
+  employeeOptions: Option[];
   selectedItems: { type: string; id: string; name: string }[];
   initialPriorities: string[];
   initialDepartments: string[];
+  initialEmployees: string[];
   handlePrioritySelection: (formData: FormData) => Promise<void>;
   handleDepartmentSelection: (formData: FormData) => Promise<void>;
+  handleEmployeeSelection: (formData: FormData) => Promise<void>;
   removeSelection: (type: string, id: string) => Promise<void>;
   clearAllSelections: () => Promise<void>;
 }
@@ -23,22 +26,28 @@ interface FilterSectionProps {
 export default function FilterSection({
   priorityOptions,
   departmentOptions,
+  employeeOptions,
   selectedItems,
   initialPriorities,
   initialDepartments,
+  initialEmployees,
   handlePrioritySelection,
   handleDepartmentSelection,
+  handleEmployeeSelection,
   removeSelection,
   clearAllSelections,
 }: FilterSectionProps) {
   const [selectedPriorities, setSelectedPriorities] = useState<string[]>(initialPriorities);
   const [selectedDepartments, setSelectedDepartments] = useState<string[]>(initialDepartments);
+  const [selectedEmployees, setSelectedEmployees] = useState<string[]>(initialEmployees);
 
   const handleRemoveSelection = async (type: string, id: string) => {
     if (type === "priorities") {
       setSelectedPriorities(selectedPriorities.filter((item) => item !== id));
     } else if (type === "departments") {
       setSelectedDepartments(selectedDepartments.filter((item) => item !== id));
+    } else if (type === "employees") {
+      setSelectedEmployees(selectedEmployees.filter((item) => item !== id));
     }
     await removeSelection(type, id);
   };
@@ -46,6 +55,7 @@ export default function FilterSection({
   const handleClearAll = async () => {
     setSelectedPriorities([]);
     setSelectedDepartments([]);
+    setSelectedEmployees([]);
     await clearAllSelections();
   };
 
@@ -75,6 +85,19 @@ export default function FilterSection({
             initialSelectedIds={initialDepartments}
             selectedIds={selectedDepartments}
             setSelectedIds={setSelectedDepartments}
+          />
+        </div>
+
+        <div className="flex-1">
+          <Selector
+            options={employeeOptions}
+            name="employees"
+            label="აირჩიეთ თანამშრომელი"
+            isMulti={true}
+            action={handleEmployeeSelection}
+            initialSelectedIds={initialEmployees}
+            selectedIds={selectedEmployees}
+            setSelectedIds={setSelectedEmployees}
           />
         </div>
       </div>

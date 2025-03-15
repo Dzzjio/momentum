@@ -1,4 +1,3 @@
-// src/app/actions.ts
 "use server";
 
 import { revalidatePath } from "next/cache";
@@ -7,6 +6,7 @@ import { revalidatePath } from "next/cache";
 interface Selections {
   priorities: string[];
   departments: string[];
+  employees: string[]; // Add employees
 }
 
 // Type the global object to include our selections
@@ -19,9 +19,14 @@ const globalStore = global as GlobalStore;
 
 // Initialize the store if it doesn’t exist
 if (!globalStore.selections) {
-  globalStore.selections = { priorities: [], departments: [] };
+  globalStore.selections = { priorities: [], departments: [], employees: [] };
 }
 const selections = globalStore.selections;
+
+// Export an async function to access the current selections
+export async function getSelections(): Promise<Selections> {
+  return selections;
+}
 
 export async function handlePrioritySelection(formData: FormData) {
   const selectedPriorities = formData.getAll("priorities_selected") as string[];
@@ -39,6 +44,14 @@ export async function handleDepartmentSelection(formData: FormData) {
   revalidatePath("/");
 }
 
+export async function handleEmployeeSelection(formData: FormData) {
+  const selectedEmployees = formData.getAll("employees_selected") as string[];
+  console.log("Server: Received employees:", selectedEmployees);
+  selections.employees = selectedEmployees;
+  console.log("Server: Updated employees store:", selections.employees);
+  revalidatePath("/");
+}
+
 export async function removeSelection(type: string, id: string) {
   if (type === "priorities") {
     selections.priorities = selections.priorities.filter((item: string) => item !== id);
@@ -46,6 +59,9 @@ export async function removeSelection(type: string, id: string) {
   } else if (type === "departments") {
     selections.departments = selections.departments.filter((item: string) => item !== id);
     console.log("Server: Removed department, updated store:", selections.departments);
+  } else if (type === "employees") {
+    selections.employees = selections.employees.filter((item: string) => item !== id);
+    console.log("Server: Removed employee, updated store:", selections.employees);
   }
   revalidatePath("/");
 }
@@ -53,6 +69,7 @@ export async function removeSelection(type: string, id: string) {
 export async function clearAllSelections() {
   selections.priorities = [];
   selections.departments = [];
+  selections.employees = [];
   console.log("Server: Cleared all selections, updated store:", selections);
   revalidatePath("/");
 }
