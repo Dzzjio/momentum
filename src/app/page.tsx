@@ -131,8 +131,9 @@ export default async function HomePage() {
         ))}
       </ul>
 
-      {/* Employees Section */}
-      <div className="mt-8">
+
+         {/* Employees Section */}
+      {/* <div className="mt-8">
         <h2 className="text-xl font-bold mb-4">თანამშრომლები</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {employees.map((employee: any) => (
@@ -153,7 +154,8 @@ export default async function HomePage() {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
+     
     </div>
   );
 }

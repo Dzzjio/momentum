@@ -91,8 +91,8 @@ const CreateEmployeeModal = ({ isOpen, onClose }: CreateEmployeeModalProps) => {
       alert('Employee created successfully!');
       resetForm();
       onClose();
-    } catch (err: any) {
-      const errorMessage = err.message || 'Unknown error occurred';
+    } catch (err) {
+      const errorMessage = (err instanceof Error) ? err.message : 'Unknown error occurred';
       setError(`Error creating employee: ${errorMessage}`);
       console.error('Detailed error:', err);
     } finally {
