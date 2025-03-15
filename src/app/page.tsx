@@ -1,3 +1,4 @@
+// src/app/page.tsx
 import { statusService } from "@/lib/api/statuses";
 import { Status } from "@/lib/types/statuses";
 import { priorityService } from "@/lib/api/priorities";
@@ -12,24 +13,6 @@ import {
   clearAllSelections,
 } from "./actions"; // Import from the new file
 
-// Fetch employees from the API
-async function fetchEmployees() {
-  const API_BASE_URL = "https://momentum.redberryinternship.ge/api";
-  const BEARER_TOKEN = "9e6c150b-4326-4abc-beea-6d195138ee1f";
-
-  const response = await fetch(`${API_BASE_URL}/employees`, {
-    headers: {
-      Authorization: `Bearer ${BEARER_TOKEN}`,
-      Accept: "application/json",
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch employees");
-  }
-
-  return response.json();
-}
 
 export default async function HomePage() {
   const statuses: Status[] = await statusService.getAllStatuses();

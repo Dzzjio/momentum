@@ -3,8 +3,21 @@
 
 import { revalidatePath } from "next/cache";
 
-// Global in-memory store (for demo; replace with database in production)
-const globalStore = global as any;
+// Define the shape of the selections object
+interface Selections {
+  priorities: string[];
+  departments: string[];
+}
+
+// Type the global object to include our selections
+interface GlobalStore {
+  selections?: Selections;
+}
+
+// Access the global object and assert its type
+const globalStore = global as GlobalStore;
+
+// Initialize the store if it doesn’t exist
 if (!globalStore.selections) {
   globalStore.selections = { priorities: [], departments: [] };
 }

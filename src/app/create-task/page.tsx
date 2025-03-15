@@ -1,6 +1,5 @@
 import React from 'react'
 import type { Metadata } from 'next'
-import Form from 'next/form'
  
 
 export const metadata: Metadata = {
