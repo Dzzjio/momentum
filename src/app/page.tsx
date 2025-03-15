@@ -75,7 +75,7 @@ export default async function HomePage() {
   const statuses: Status[] = await statusService.getAllStatuses();
   const priorities: Priority[] = await priorityService.getAllPriorities();
   const departments: Department[] = await departmentService.getAllDepartments();
-  const employees = await fetchEmployees(); // Fetch employees
+  // const employees = await fetchEmployees();
 
   const colors = ["bg-yellow-400", "bg-red-500", "bg-pink-500", "bg-blue-500"];
 

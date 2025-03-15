@@ -24,7 +24,6 @@ export default function Selector({
   label,
   isMulti = false,
   action,
-  initialSelectedIds = [],
   selectedIds,
   setSelectedIds,
 }: SelectorProps) {

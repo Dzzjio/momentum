@@ -12,9 +12,9 @@ const page = () => {
   return (
     <section>
         <h2 className='text-black'>შექმენი ახალი დავალება</h2>
-        <form className='border-[#DDD2FF] bg-[#FBF9FFA6] felx'>
-            
-        </form>
+        <div>
+          :D
+        </div>
     </section>
   )
 }
