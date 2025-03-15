@@ -2,16 +2,16 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://momentum.redbe
 
 export const API_ENDPOINTS = {
   PRIORITIES: {
-    GET_ALL: `${BASE_URL}/priorities`,
+    GET_ALL: `${BASE_URL}/priorities` as const,
   },
   DEPARTMENTS: {
-    GET_ALL: `${BASE_URL}/departments` as const,
-    GET_BY_ID: (id: number) => `${BASE_URL}/departments/${id}` as const,
-    CREATE: `${BASE_URL}/departments` as const,
-    UPDATE: (id: number) => `${BASE_URL}/departments/${id}` as const,
-    DELETE: (id: number) => `${BASE_URL}/departments/${id}` as const,
+    GET_ALL: `${BASE_URL}/departments` as const
   },
   STATUSES: {
     GET_ALL: `${BASE_URL}/statuses` as const,
+  },
+  EMPLOYEES: {
+    GET_ALL: `${BASE_URL}/employees`,
+    CREATE: `${BASE_URL}/employees`,
   },
 };

@@ -52,10 +52,30 @@ export async function clearAllSelections() {
   revalidatePath("/");
 }
 
+// Fetch employees from the API
+async function fetchEmployees() {
+  const API_BASE_URL = 'https://momentum.redberryinternship.ge/api';
+  const BEARER_TOKEN = '9e6c150b-4326-4abc-beea-6d195138ee1f';
+
+  const response = await fetch(`${API_BASE_URL}/employees`, {
+    headers: {
+      'Authorization': `Bearer ${BEARER_TOKEN}`,
+      'Accept': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch employees');
+  }
+
+  return response.json();
+}
+
 export default async function HomePage() {
   const statuses: Status[] = await statusService.getAllStatuses();
   const priorities: Priority[] = await priorityService.getAllPriorities();
   const departments: Department[] = await departmentService.getAllDepartments();
+  const employees = await fetchEmployees(); // Fetch employees
 
   const colors = ["bg-yellow-400", "bg-red-500", "bg-pink-500", "bg-blue-500"];
 
@@ -98,7 +118,7 @@ export default async function HomePage() {
         clearAllSelections={clearAllSelections}
       />
 
-      <ul className="flex gap-4 w-full">
+      <ul className="flex gap-4 w-full mb-8">
         {statuses.map((stat, index) => (
           <li
             key={stat.id}
@@ -110,6 +130,30 @@ export default async function HomePage() {
           </li>
         ))}
       </ul>
+
+      {/* Employees Section */}
+      <div className="mt-8">
+        <h2 className="text-xl font-bold mb-4">თანამშრომლები</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {employees.map((employee: any) => (
+            <div key={employee.id} className="bg-white p-4 rounded-lg shadow-md">
+              <div className="flex items-center space-x-4">
+                <img
+                  src={employee.avatar || '/img/default-avatar.png'}
+                  alt={`${employee.name} ${employee.surname}`}
+                  className="w-12 h-12 rounded-full"
+                />
+                <div>
+                  <p className="font-semibold">{employee.name} {employee.surname}</p>
+                  <p className="text-sm text-gray-500">
+                    {departments.find((d) => d.id === employee.department)?.name || employee.department.name}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
