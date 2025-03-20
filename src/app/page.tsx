@@ -17,6 +17,7 @@ import {
   clearAllSelections,
   getSelections,
 } from "./actions";
+import Link from "next/link";
 
 export default async function HomePage() {
   const statuses: Status[] = await statusService.getAllStatuses();
@@ -27,7 +28,6 @@ export default async function HomePage() {
 
   const colors = ["yellow-400", "red-500", "pink-500", "blue-500"];
 
-  // Map Tailwind color names to their hex values for inline styles
   const colorMap: { [key: string]: string } = {
     "yellow-400": "#fbbf24", // Tailwind's yellow-400
     "red-500": "#ef4444",    // Tailwind's red-500
@@ -120,7 +120,6 @@ export default async function HomePage() {
         clearAllSelections={clearAllSelections}
       />
 
-      {/* Status Columns with Tasks */}
       <div className="mt-8 grid grid-cols-1 md:grid-cols-4 gap-4">
         {tasksByStatus.map((column, index) => (
           <div key={column.status.id} className="flex flex-col">
@@ -132,14 +131,13 @@ export default async function HomePage() {
               {column.status.name}
             </div>
             <div className="space-y-4">
-              {column.tasks.length > 0 ? (
-                column.tasks.map((task) => (
+            {column.tasks.length > 0 ? (
+              column.tasks.map((task) => (
+                <Link href={`/tasks/${task.id}`} key={task.id}>
                   <div
-                    key={task.id}
-                    className="p-4 bg-white rounded-lg shadow border"
+                    className="p-4 bg-white my-6 rounded-lg shadow border hover:bg-gray-50 cursor-pointer"
                     style={{ borderColor: colorMap[colors[index % colors.length]] }}
                   >
-
                     <div className="flex justify-between items-center mb-3">
                       <div className="flex items-center space-x-2">
                         <p>{task.priority.name}</p>
@@ -148,12 +146,10 @@ export default async function HomePage() {
                           src={task.priority.icon}
                           alt="priority"
                         />
-
                         <span className="bg-pink-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
                           {task.department.name}
                         </span>
                       </div>
-
                       <p className="text-sm text-gray-500">
                         {new Intl.DateTimeFormat("ka-GE", {
                           year: "numeric",
@@ -162,7 +158,6 @@ export default async function HomePage() {
                         }).format(new Date(task.due_date))}
                       </p>
                     </div>
-
                     <h3 className="text-lg font-semibold text-gray-800">{task.name}</h3>
                     <p className="text-gray-600 mt-1">{task.description}</p>
                     <div className="flex justify-between items-center mt-4">
@@ -190,10 +185,11 @@ export default async function HomePage() {
                       </div>
                     </div>
                   </div>
-                ))
-              ) : (
-                <p className="text-gray-500 text-center">დავალებები არ არის</p>
-              )}
+                </Link>
+              ))
+            ) : (
+              <p className="text-gray-500 text-center">დავალებები არ არის</p>
+            )}
             </div>
           </div>
         ))}
