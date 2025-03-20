@@ -2,25 +2,7 @@
 
 import { commentService } from "@/lib/api/comments";
 import { Comment, CommentCreateRequest } from "@/lib/types/comments";
-import { useState, useEffect, useRef } from "react"; // Import useRef
-
-// Utility function to safely parse dates
-function parseDate(dateString: string | undefined | null): Date | null {
-  if (!dateString || typeof dateString !== "string") {
-    if (process.env.NODE_ENV === "development") {
-      console.error("Invalid date string (missing or not a string):", dateString);
-    }
-    return null;
-  }
-  const parsedDate = new Date(dateString);
-  if (isNaN(parsedDate.getTime())) {
-    if (process.env.NODE_ENV === "development") {
-      console.error("Invalid date string (cannot parse):", dateString);
-    }
-    return null;
-  }
-  return parsedDate;
-}
+import { useState, useEffect, useRef } from "react";
 
 interface AddCommentFormProps {
   taskId: number;
