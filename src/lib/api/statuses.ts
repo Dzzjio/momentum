@@ -1,4 +1,3 @@
-// src/lib/api/statuses.ts
 import { fetchApi } from "./client";
 import { API_ENDPOINTS } from "./endpoints";
 import { Status } from "../types/statuses";

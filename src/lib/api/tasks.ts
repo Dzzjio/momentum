@@ -1,9 +1,8 @@
-import { Task, TaskCreateRequest } from "../types/tasks"; // Import your types
+import { Task, TaskCreateRequest } from "../types/tasks"; 
 
-const API_BASE_URL = "https://momentum.redberryinternship.ge/api"; // Replace with your actual API base URL
-const BEARER_TOKEN = "9e6c150b-4326-4abc-beea-6d195138ee1f"; // Replace with your actual Bearer Token
+const API_BASE_URL = "https://momentum.redberryinternship.ge/api"; 
+const BEARER_TOKEN = "9e6c150b-4326-4abc-beea-6d195138ee1f";
 
-// Helper function to get authentication headers
 const getAuthHeaders = () => ({
   Authorization: `Bearer ${BEARER_TOKEN}`,
   Accept: "application/json",
@@ -15,9 +14,9 @@ export const taskService = {
       method: "POST",
       headers: {
         ...getAuthHeaders(),
-        "Content-Type": "application/json", // Ensure JSON content type
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(payload), // Send payload as JSON
+      body: JSON.stringify(payload),
     });
 
     if (!response.ok) {
@@ -31,17 +30,17 @@ export const taskService = {
 
   async getTask(id: number): Promise<Task> {
     const response = await fetch(`${API_BASE_URL}/tasks/${id}`, {
-        method: "GET",
-        headers: getAuthHeaders(),
+      method: "GET",
+      headers: getAuthHeaders(),
     });
 
     if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`API Error: ${response.status} - ${errorText}`);
+      const errorText = await response.text();
+      throw new Error(`API Error: ${response.status} - ${errorText}`);
     }
 
     return response.json();
-},
+  },
 
   async getAllTasks(): Promise<Task[]> {
     const response = await fetch(`${API_BASE_URL}/tasks`, {

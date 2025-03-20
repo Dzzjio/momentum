@@ -2,22 +2,6 @@
 
 import { commentService } from "@/lib/api/comments";
 import { Comment, CommentCreateRequest } from "@/lib/types/comments";
-<<<<<<< HEAD
-import { useState, useEffect } from "react";
-
-interface AddCommentFormProps {
-  taskId: number;
-  initialComments: Comment[]; // Pass initial comments as a prop
-}
-
-export default function AddCommentForm({ taskId, initialComments }: AddCommentFormProps) {
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [newComment, setNewComment] = useState("");
-  const [isMounted, setIsMounted] = useState(false); // Track client mount
-
-  // Set initial comments after mount to avoid hydration mismatch
-  useEffect(() => {
-=======
 import { useState, useEffect, useRef } from "react"; // Import useRef
 
 // Utility function to safely parse dates
@@ -69,7 +53,6 @@ export default function AddCommentForm({ taskId, initialComments }: AddCommentFo
   useEffect(() => {
     console.log("AddCommentForm: Initial comments from props:", JSON.stringify(initialComments, null, 2));
     console.log("AddCommentForm: Setting comments state:", JSON.stringify(comments, null, 2));
->>>>>>> HEAD@{1}
     setComments(initialComments);
     setIsMounted(true);
   }, [initialComments]);
@@ -81,10 +64,7 @@ export default function AddCommentForm({ taskId, initialComments }: AddCommentFo
     try {
       const payload: CommentCreateRequest = { text: newComment };
       const createdComment = await commentService.createTaskComment(taskId, payload);
-<<<<<<< HEAD
-=======
       console.log("AddCommentForm: Created comment:", createdComment);
->>>>>>> HEAD@{1}
       setComments([createdComment, ...comments]);
       setNewComment("");
     } catch (error) {
@@ -93,9 +73,6 @@ export default function AddCommentForm({ taskId, initialComments }: AddCommentFo
     }
   };
 
-<<<<<<< HEAD
-  // Render nothing on the server to avoid hydration mismatch
-=======
   const handleAddReply = async (e: React.FormEvent, parentId: number) => {
     e.preventDefault();
     if (!replyText.trim()) return;
@@ -141,29 +118,11 @@ export default function AddCommentForm({ taskId, initialComments }: AddCommentFo
     return total;
   };
 
->>>>>>> HEAD@{1}
   if (!isMounted) {
     return null;
   }
 
   return (
-<<<<<<< HEAD
-    <form onSubmit={handleAddComment} className="mb-6" suppressHydrationWarning>
-      <textarea
-        value={newComment}
-        onChange={(e) => setNewComment(e.target.value)}
-        className="w-full p-2 border border-gray-300 rounded mb-2"
-        placeholder="დაწერე ჩანაწერი..."
-        rows={3}
-      />
-      <button
-        type="submit"
-        className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
-      >
-        გაგზავნა
-      </button>
-    </form>
-=======
     <div>
       <form onSubmit={handleAddComment} className="mb-6" suppressHydrationWarning>
         <div className="relative">
@@ -264,6 +223,5 @@ export default function AddCommentForm({ taskId, initialComments }: AddCommentFo
         )}
       </div>
     </div>
->>>>>>> HEAD@{1}
   );
 }

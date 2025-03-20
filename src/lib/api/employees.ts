@@ -1,6 +1,5 @@
 import { CreateEmployeePayload, Employee } from "../types/employees";
 
-// api/employees.ts
 const API_BASE_URL = "https://momentum.redberryinternship.ge/api";
 const BEARER_TOKEN = "9e6c150b-4326-4abc-beea-6d195138ee1f";
 
@@ -48,7 +47,6 @@ export const employeeService = {
     return response.json();
   },
 
-  // New method to fetch all employees
   async getAllEmployees(): Promise<Employee[]> {
     const response = await fetch(`${API_BASE_URL}/employees`, {
       method: "GET",
