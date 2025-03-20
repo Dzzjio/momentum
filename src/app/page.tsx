@@ -8,6 +8,8 @@ import { employeeService } from "@/lib/api/employees";
 import { Employee } from "@/lib/types/employees";
 import { taskService } from "@/lib/api/tasks";
 import { Task } from "@/lib/types/tasks";
+import { commentService } from "@/lib/api/comments"; // Import commentService
+import { Comment } from "@/lib/types/comments"; // Import Comment type
 import FilterSection from "./components/filter-select";
 import {
   handlePrioritySelection,
@@ -25,6 +27,24 @@ export default async function HomePage() {
   const departments: Department[] = await departmentService.getAllDepartments();
   const employees: Employee[] = await employeeService.getAllEmployees();
   const tasks: Task[] = await taskService.getAllTasks();
+
+  // Fetch comments for each task and calculate comment counts
+  const commentCounts: { [taskId: number]: number } = {};
+  for (const task of tasks) {
+    try {
+      const comments: Comment[] = await commentService.getTaskComments(task.id);
+      let totalComments = comments.length; // Parent comments
+      comments.forEach((comment) => {
+        if (comment.replies) {
+          totalComments += comment.replies.length; // Add replies
+        }
+      });
+      commentCounts[task.id] = totalComments;
+    } catch (error) {
+      console.error(`Error fetching comments for task ${task.id}:`, error);
+      commentCounts[task.id] = 0; // Default to 0 if fetching fails
+    }
+  }
 
   const colors = ["yellow-400", "red-500", "pink-500", "blue-500"];
 
@@ -123,73 +143,75 @@ export default async function HomePage() {
       <div className="mt-8 grid grid-cols-1 md:grid-cols-4 gap-4">
         {tasksByStatus.map((column, index) => (
           <div key={column.status.id} className="flex flex-col">
+            {/* Column Header */}
             <div
-              className={`py-3 text-white rounded-xl font-bold bg-${
-                colors[index % colors.length]
-              } flex items-center justify-center mb-4`}
+              style={{ backgroundColor: colorMap[colors[index % colors.length]] }}
+              className="py-3 text-white rounded-xl font-bold flex items-center justify-center mb-4"
             >
               {column.status.name}
             </div>
+
+            {/* Tasks in the Column */}
             <div className="space-y-4">
-            {column.tasks.length > 0 ? (
-              column.tasks.map((task) => (
-                <Link href={`/tasks/${task.id}`} key={task.id}>
-                  <div
-                    className="p-4 bg-white my-6 rounded-lg shadow border hover:bg-gray-50 cursor-pointer"
-                    style={{ borderColor: colorMap[colors[index % colors.length]] }}
-                  >
-                    <div className="flex justify-between items-center mb-3">
-                      <div className="flex items-center space-x-2">
-                        <p>{task.priority.name}</p>
+              {column.tasks.length > 0 ? (
+                column.tasks.map((task) => (
+                  <Link href={`/tasks/${task.id}`} key={task.id}>
+                    <div
+                      className="p-4 bg-white my-6 rounded-lg shadow border hover:bg-gray-50 cursor-pointer"
+                      style={{ borderColor: colorMap[colors[index % colors.length]] }}
+                    >
+                      <div className="flex justify-between items-center mb-3">
+                        <div className="flex items-center space-x-2">
+                          <p>{task.priority.name}</p>
+                          <img
+                            className="w-5 h-5"
+                            src={task.priority.icon}
+                            alt="priority"
+                          />
+                          <span className="bg-pink-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
+                            {task.department.name}
+                          </span>
+                        </div>
+                        <p className="text-sm text-gray-500">
+                          {new Intl.DateTimeFormat("ka-GE", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          }).format(new Date(task.due_date ?? ''))}
+                        </p>
+                      </div>
+                      <h3 className="text-lg font-semibold text-gray-800">{task.name}</h3>
+                      <p className="text-gray-600 mt-1">{task.description}</p>
+                      <div className="flex justify-between items-center mt-4">
                         <img
-                          className="w-5 h-5"
-                          src={task.priority.icon}
-                          alt="priority"
+                          className="w-10 h-10 rounded-full"
+                          src={task.employee.avatar}
+                          alt="avatar"
                         />
-                        <span className="bg-pink-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
-                          {task.department.name}
-                        </span>
-                      </div>
-                      <p className="text-sm text-gray-500">
-                        {new Intl.DateTimeFormat("ka-GE", {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        }).format(new Date(task.due_date))}
-                      </p>
-                    </div>
-                    <h3 className="text-lg font-semibold text-gray-800">{task.name}</h3>
-                    <p className="text-gray-600 mt-1">{task.description}</p>
-                    <div className="flex justify-between items-center mt-4">
-                      <img
-                        className="w-10 h-10 rounded-full"
-                        src={task.employee.avatar}
-                        alt="avatar"
-                      />
-                      <div className="flex items-center space-x-1">
-                        <svg
-                          className="w-5 h-5 text-gray-500"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
-                          ></path>
-                        </svg>
-                        <span className="text-sm text-gray-500">8</span>
+                        <div className="flex items-center space-x-1">
+                          <svg
+                            className="w-5 h-5 text-gray-500"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+                            ></path>
+                          </svg>
+                          <span className="text-sm text-gray-500">{commentCounts[task.id]}</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </Link>
-              ))
-            ) : (
-              <p className="text-gray-500 text-center">დავალებები არ არის</p>
-            )}
+                  </Link>
+                ))
+              ) : (
+                <p className="text-gray-500 text-center">დავალებები არ არის</p>
+              )}
             </div>
           </div>
         ))}
