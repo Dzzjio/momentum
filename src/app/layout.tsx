@@ -23,21 +23,19 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        suppressHydrationWarning // Add this
       >
-        <section className="w-4/5 mx-auto">
-          <Header />
-          {children}
-        </section>
+        <main>
+          <section className="w-9/10 mx-auto">
+            <Header />
+            {children}
+          </section>
+        </main>
       </body>
     </html>
   );
