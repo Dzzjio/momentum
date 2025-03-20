@@ -1,10 +1,10 @@
 import { taskService } from "@/lib/api/tasks";
 import { commentService } from "@/lib/api/comments";
-import { Task,  } from "@/lib/types/tasks";
-import  { Comment } from "@/lib/types/comments";
+import { Task } from "@/lib/types/tasks";
+import { Comment } from "@/lib/types/comments";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import AddCommentForm from "../app/components/comment-form";
+import AddCommentForm from "../../components/comment-form";
 
 interface TaskPageProps {
   params: Promise<{ id: string }>;
@@ -12,13 +12,44 @@ interface TaskPageProps {
 
 export default async function TaskPage({ params }: TaskPageProps) {
   const unwrappedParams = await params;
-  const taskId = Number(unwrappedParams.id);
+  console.log("Full params object (unwrapped):", unwrappedParams); // Log the unwrapped params
+
+  // Check if id exists and is a string
+  const taskIdParam = unwrappedParams.id;
+  console.log("Raw taskId from params:", taskIdParam, typeof taskIdParam); // Log type and value
+
+  if (!taskIdParam || typeof taskIdParam !== "string") {
+    console.error("Invalid or missing taskId param:", taskIdParam);
+    notFound();
+    return null;
+  }
+
+  // Convert to number with explicit validation
+  const taskId = parseInt(taskIdParam, 10); // Use parseInt for stricter parsing
+  if (isNaN(taskId)) {
+    console.error("Failed to parse taskId to number:", taskIdParam);
+    notFound();
+    return null;
+  }
 
   try {
+    console.log("Fetching task and comments for taskId:", taskId);
+
     const [task, comments] = await Promise.all([
       taskService.getTask(taskId),
       commentService.getTaskComments(taskId),
     ]);
+
+    console.log("Task data:", task);
+    console.log("Due date value:", task.due_date);
+    console.log("Comments data:", comments);
+
+    // Validate due_date
+    let dueDate = new Date(task.due_date);
+    if (isNaN(dueDate.getTime())) {
+      console.error("Invalid due_date value:", task.due_date);
+      dueDate = new Date(); // Fallback to current date if invalid
+    }
 
     return (
       <div className="py-6 px-4 max-w-6xl mx-auto">
@@ -61,10 +92,10 @@ export default async function TaskPage({ params }: TaskPageProps) {
                 <span className="font-semibold">თანამშრომელი:</span>
                 <img
                   className="w-10 h-10 rounded-full"
-                  src={task.employee.avatar}
-                  alt="avatar"
+                  src={task.employee?.avatar || "https://via.placeholder.com/40"}
+                  alt={`${task.employee?.name || "Unknown"} ${task.employee?.surname || "User"}`}
                 />
-                <span>{`${task.employee.name} ${task.employee.surname}`}</span>
+                <span>{`${task.employee?.name || "Unknown"} ${task.employee?.surname || "User"}`}</span>
               </div>
 
               <div className="flex items-center space-x-2">
@@ -74,7 +105,7 @@ export default async function TaskPage({ params }: TaskPageProps) {
                     year: "numeric",
                     month: "numeric",
                     day: "numeric",
-                  }).format(new Date(task.due_date))}
+                  }).format(dueDate)}
                 </span>
               </div>
             </div>
@@ -98,22 +129,20 @@ export default async function TaskPage({ params }: TaskPageProps) {
               </span>
             </div>
 
-            {/* Add Comment Form (Client Component) */}
             <AddCommentForm taskId={taskId} initialComments={comments} />
 
-            {/* Comments List */}
             <div className="space-y-4">
               {comments.length > 0 ? (
                 comments.map((comment) => (
                   <div key={comment.id} className="flex space-x-3">
                     <img
                       className="w-10 h-10 rounded-full"
-                      src={comment.author.avatar}
-                      alt={`${comment.author.name} ${comment.author.surname}`}
+                      src={comment.author?.avatar || "https://via.placeholder.com/40"}
+                      alt={`${comment.author?.name || "Unknown"} ${comment.author?.surname || "User"}`}
                     />
                     <div>
                       <p className="font-semibold text-gray-800">
-                        {`${comment.author.name} ${comment.author.surname}`}
+                        {`${comment.author?.name || "Unknown"} ${comment.author?.surname || "User"}`}
                       </p>
                       <p className="text-gray-600">{comment.text}</p>
                       <p className="text-xs text-gray-400">
